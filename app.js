@@ -2,7 +2,7 @@ const express = require('express'); // Import the express package
 const path = require('path'); // Import the path package
 const cookieParser = require('cookie-parser'); // Import the cookie-parser package
 const logger = require('morgan'); // Import the morgan package
-const config = require('config'); // Import the config package
+const config = require('./config/production.json'); // Import the config package
 const cors = require('cors'); // Import the cors package
 const mongoose = require('mongoose');
 
