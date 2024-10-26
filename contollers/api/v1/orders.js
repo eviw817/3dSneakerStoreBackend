@@ -7,7 +7,7 @@ const index = async (req, res) => {
             const orders = await Order.find(); // Get all orders
             response.json(orders); // Send the orders as JSON
         } catch (error) {
-            response.status(500).json({ message: error.message }); // Send an error if there is one
+            response.status(400).json({ message: error.message }); // Send an error if there is one
         }
 })
 }
