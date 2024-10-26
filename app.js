@@ -4,10 +4,16 @@ const cookieParser = require('cookie-parser'); // Import the cookie-parser packa
 const logger = require('morgan'); // Import the morgan package
 const config = require('config'); // Import the config package
 const cors = require('cors'); // Import the cors package
-const mongoose = require('mongoose'); // Import the mongoose package
-const connection = config.get("mongodb"); // Get the connection string from the config file
+const mongoose = require('mongoose');
 
-mongoose.connect(connection);
+mongoose.connect(config.mongodb, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Connected to MongoDB');
+}).catch((err) => {
+    console.error('Error connecting to MongoDB:', err.message);
+});
 
 const orderRouter = require('./routes/api/v1/orders');
 
