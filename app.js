@@ -6,10 +6,7 @@ const config = require('./config/production.json'); // Import the config package
 const cors = require('cors'); // Import the cors package
 const mongoose = require('mongoose');
 
-mongoose.connect(config.mongodb, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
+mongoose.connect(config.mongodb).then(() => {
     console.log('Connected to MongoDB');
 }).catch((err) => {
     console.error('Error connecting to MongoDB:', err.message);
@@ -31,6 +28,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/v1/messages', orderRouter);
+app.use('/api/v1/orders', orderRouter);
 
 module.exports = app;
