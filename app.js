@@ -12,6 +12,8 @@ mongoose.connect(config.mongodb).then(() => {
     console.error('Error connecting to MongoDB:', err.message);
 });
 
+const userRouter = require('./routes/api/v1/users');
+
 const orderRouter = require('./routes/api/v1/orders');
 
 const app = express();
@@ -29,5 +31,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/v1/orders', orderRouter);
+app.use('/api/v1/users', userRouter);
 
 module.exports = app;
