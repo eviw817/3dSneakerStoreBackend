@@ -5,6 +5,7 @@ const logger = require('morgan'); // Import the morgan package
 const config = require('./config/production.json'); // Import the config package
 const cors = require('cors'); // Import the cors package
 const mongoose = require('mongoose');
+const passport = require('./passport/passport');
 
 mongoose.connect(config.mongodb).then(() => {
     console.log('Connected to MongoDB');
@@ -13,7 +14,6 @@ mongoose.connect(config.mongodb).then(() => {
 });
 
 const userRouter = require('./routes/api/v1/users');
-
 const orderRouter = require('./routes/api/v1/orders');
 
 const app = express();
@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/v1/orders', orderRouter);
+app.use('/api/v1/orders', passport.authenticate("jwt", {session: false }), orderRouter);
 app.use('/api/v1/users', userRouter);
 
 module.exports = app;
