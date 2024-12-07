@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const orderController = require("../../../contollers/api/v1/orders");
+const orderController = require("../contollers/orders");
 
 router.get('/', orderController.index);
 router.get('/:id', orderController.findOne);

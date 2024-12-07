@@ -13,8 +13,8 @@ mongoose.connect(config.mongodb).then(() => {
     console.error('Error connecting to MongoDB:', err.message);
 });
 
-const userRouter = require('./routes/api/v1/users');
-const orderRouter = require('./routes/api/v1/orders');
+const userRouter = require('./routes/users');
+const orderRouter = require('./routes/orders');
 
 const app = express();
 
@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/v1/orders', passport.authenticate("jwt", {session: false }), orderRouter);
-app.use('/api/v1/users', userRouter);
+app.use('/orders', passport.authenticate("jwt", {session: false }), orderRouter);
+app.use('/users', userRouter);
 
 module.exports = app;

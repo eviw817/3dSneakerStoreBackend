@@ -1,5 +1,5 @@
-const User = require('../../../models/api/v1/User');
-const passport = require('../../../passport/passport');
+const User = require('../models/User');
+const passport = require('../passport/passport');
 const jwt = require('jsonwebtoken');
 
 const signup = async (request, response) => {
@@ -28,20 +28,38 @@ const signup = async (request, response) => {
 };
 
 const login = async (request, response) => {
-    const user = await User.authenticate()(request.body.username, request.body.password).then(result => {
+    try {
+        const { username, password } = request.body;
+        const user = await User.authenticate()(username, password);
+
+        if (!user) {
+            return response.status(401).json({
+                "status": "Login failed",
+                "message": "Invalid username or password"
+            });
+        }
+
+        const token = jwt.sign({
+            uid: user._id,
+            username: user.username
+        }, "secret shit");
+
         response.json({
             "status": "Login successful",
             "data": {
-                "user": result
+                "user": {
+                    "_id": user._id,
+                    "username": user.username
+                },
+                "token": token
             }
         });
-    }).catch(error => {
+    } catch (error) {
         response.status(401).json({
             "status": "Login failed",
-            "message": error
+            "message": error.message
         });
     }
-    );
 }
 
 module.exports = { 

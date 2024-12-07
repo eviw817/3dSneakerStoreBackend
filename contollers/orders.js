@@ -1,4 +1,4 @@
-const Order = require('../../../models/api/v1/Order'); // Import the Order model
+const Order = require('../models/Order'); // Import the Order model
 
 // GET /api/v1/orders
 const index = async (request, response) => {
@@ -19,12 +19,15 @@ const findOne = async (request, response) => {
 // POST /api/v1/orders
 const create = async (request, response) => {
     const order = new Order({
-        user: request.body.user, 
-        title: request.body.title, 
+        shoeId: request.body.shoeId, 
+        name: request.body.name,
         price: request.body.price, 
-        size: request.body.size, 
-        color: request.body.color, 
+        deliveryStatus: request.body.deliveryStatus, 
+        paymentStatus: request.body.paymentStatus, 
+        timeOfOrder: request.body.timeOfOrder, 
+        part: request.body.part, 
         material: request.body.material, 
+        color: request.body.color, 
         quantity: request.body.quantity
     })
     try {
@@ -38,13 +41,16 @@ const create = async (request, response) => {
 
 // PUT /api/v1/orders/:id
 const updateOne = async (request, response) => {
-    const newUser = request.body.user;
-    const newTitle = request.body.title;
+    const newShoeId = request.body.shoeId;
+    const newName = request.body.name;
     const newPrice = request.body.price;
-    const newSize = request.body.size;
-    const newColor = request.body.color;
+    const newDeliveryStatus = request.body.deliveryStatus;
+    const newPaymentStatus = request.body.paymentStatus;
+    const newTimeOfOrder = request.body.timeOfOrder;
+    const newPart = request.body.part;
     const newMaterial = request.body.material;
-    const newQuantity = request.body.quantity
+    const newColor = request.body.color;
+    const newQuantity = request.body.quantity;
     /**
      * Indien de body volledig leeg is, wordt de PUT niet geaccepteerd.
      */
@@ -61,13 +67,16 @@ const updateOne = async (request, response) => {
         // Een leeg update query object wordt aangemaakt
         const updateQuery = {};
         // Afhankelijk van wat er meegegeven is, wordt er in de updateQuery object nieuwe velden aangewezen.
-        newUser && (request.body.user = newUser);
-        newTitle && (request.body.title = newTitle);
+        newShoeId && (request.body.shoeId = newShoeId);
+        newName && (request.body.name = newName);
         newPrice && (request.body.price = newPrice);
-        newSize && (request.body.size = newSize);
-        newColor && (request.body.color = newColor);
+        newDeliveryStatus && (request.body.deliveryStatus = newDeliveryStatus);
+        newPaymentStatus && (request.body.paymentStatus = newPaymentStatus);
+        newTimeOfOrder && (request.body.timeOfOrder = newTimeOfOrder);
+        newPart && (request.body.part = newPart);
         newMaterial && (request.body.material = newMaterial);
-        newQuantity && (request.body.quantity = newQuantity)
+        newColor && (request.body.color = newColor);
+        newQuantity && (request.body.quantity = newQuantity);
         /**
          * Het bericht word gevonden gebaseerd op de id en deze wordt dan aangepast.
          */
