@@ -27,40 +27,41 @@ const signup = async (request, response) => {
     })
 };
 
-const login = async (request, response) => {
-    try {
-        const { username, password } = request.body;
-        const user = await User.authenticate()(username, password);
-
-        if (!user) {
+const login = (request, response, next) => {
+    passport.authenticate('local', { session: false }, (err, user, info) => {
+        if (err || !user) {
             return response.status(401).json({
                 "status": "Login failed",
-                "message": "Invalid username or password"
+                "message": info ? info.message : "Login failed"
             });
         }
 
-        const token = jwt.sign({
-            uid: user._id,
-            username: user.username
-        }, "secret shit");
-
-        response.json({
-            "status": "Login successful",
-            "data": {
-                "user": {
-                    "_id": user._id,
-                    "username": user.username
-                },
-                "token": token
+        request.login(user, { session: false }, (err) => {
+            if (err) {
+                return response.status(500).json({
+                    "status": "Login failed",
+                    "message": err.message
+                });
             }
+
+            const token = jwt.sign({
+                uid: user._id,
+                username: user.username
+            }, "secret shit");
+
+            return response.json({
+                "status": "Login successful",
+                "data": {
+                    "user": {
+                        "_id": user._id,
+                        "username": user.username
+                    },
+                    "token": token
+                }
+            });
         });
-    } catch (error) {
-        response.status(401).json({
-            "status": "Login failed",
-            "message": error.message
-        });
-    }
-}
+    })(request, response, next);
+};
 
 module.exports = { 
     signup,
