@@ -17,7 +17,7 @@ router.put('/:id/password', async function(req, res, next) {
   try {
     const { id } = req.params;
     const { newPassword } = req.body;
-    console.log(id)
+    console.log(id);
     const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });

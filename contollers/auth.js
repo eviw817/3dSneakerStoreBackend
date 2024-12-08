@@ -27,40 +27,46 @@ const signup = async (request, response) => {
     })
 };
 
-const login = (request, response, next) => {
-    passport.authenticate('local', { session: false }, (err, user, info) => {
-        if (err || !user) {
-            return response.status(401).json({
-                "status": "Login failed",
-                "message": info ? info.message : "Login failed"
-            });
+const login = async (request, response, next) => {
+    try {
+        const user = await new Promise((resolve, reject) => {
+            passport.authenticate('local', { session: false }, (err, user, info) => {
+                if (err || !user) {
+                    reject(info ? info.message : "Login failed");
+                } else {
+                    resolve(user);
+                }
+            })(request, response, next);
+        });
+
+        if (user.username === "admin@admin.com" && request.body.password === "Admin") {
+            user.isAdmin = true;
+            await user.save();
         }
 
-        request.login(user, { session: false }, (err) => {
-            if (err) {
-                return response.status(500).json({
-                    "status": "Login failed",
-                    "message": err.message
-                });
+        const token = jwt.sign({
+            uid: user._id,
+            username: user.username,
+            isAdmin: user.isAdmin || false
+        }, "very secret 3dsneaker hash");
+
+        return response.json({
+            "status": "Login successful",
+            "data": {
+                "user": {
+                    "_id": user._id,
+                    "username": user.username,
+                    "isAdmin": user.isAdmin || false
+                },
+                "token": token
             }
-
-            const token = jwt.sign({
-                uid: user._id,
-                username: user.username
-            }, "secret shit");
-
-            return response.json({
-                "status": "Login successful",
-                "data": {
-                    "user": {
-                        "_id": user._id,
-                        "username": user.username
-                    },
-                    "token": token
-                }
-            });
         });
-    })(request, response, next);
+    } catch (error) {
+        return response.status(401).json({
+            "status": "Login failed",
+            "message": error
+        });
+    }
 };
 
 module.exports = { 

@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/orders', passport.authenticate("jwt", {session: false }), orderRouter);
+app.use('/orders', passport.authenticate("jwt", { session: false }), orderRouter);
 app.use('/users', userRouter);
 
 module.exports = app;

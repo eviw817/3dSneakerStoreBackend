@@ -9,9 +9,10 @@ passport.deserializeUser(User.deserializeUser());
 // webtoken strategy (JWT)
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
-const opts = {}
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = "very secret 3dsneaker hash";
+const opts = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: "very secret 3dsneaker hash"
+}
 
 passport.use(new JwtStrategy(opts, async function(jwt_payload, done) {
     User.findOne({_id: jwt_payload.uid})
