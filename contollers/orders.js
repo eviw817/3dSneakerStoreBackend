@@ -4,6 +4,7 @@ const Order = require('../models/Order'); // Import the Order model
 const index = async (request, response) => {
     try {
         const orders = await Order.find(); // Get all orders
+        console.log(orders);
         response.json(orders); // Send the orders as JSON
     } catch (error) {
         response.status(400).json({ message: error.message }); // Send an error if there is one
@@ -33,6 +34,7 @@ const create = async (request, response) => {
         material: request.body.material, 
         color: request.body.color, 
         name: request.body.name,
+        size: request.body.size,
         quantity: request.body.quantity,
         userId: request.body.userId
     })
@@ -46,7 +48,6 @@ const create = async (request, response) => {
 
 // PUT /api/v1/orders/:id
 const updateOne = async (request, response) => {
-    const newShoeId = request.params.shoeId;
     const newTitle = request.body.title;
     const newPrice = request.body.price;
     const newDeliveryStatus = request.body.deliveryStatus;
@@ -62,17 +63,18 @@ const updateOne = async (request, response) => {
     const newMaterial = request.body.material;
     const newColor = request.body.color;
     const newName = request.body.name;
+    const newSize = request.body.size;
     const newQuantity = request.body.quantity;
     const newUserId = request.params.userId;
     /**
      * Indien de body volledig leeg is, wordt de PUT niet geaccepteerd.
      */
-    if (newShoeId === undefined && newTitle === undefined && newPrice === undefined && newDeliveryStatus === undefined && newPaymentStatus === undefined && newTimeOfOrder === undefined && newOutside_1 === undefined && newOutside_2 === undefined && newOutside_3 === undefined && newSole_bottom === undefined && newSole_top === undefined && newInside === undefined && newLaces === undefined && newQuantity === undefined && newUserId === undefined) {
+    if (newTitle === undefined && newPrice === undefined && newDeliveryStatus === undefined && newPaymentStatus === undefined && newTimeOfOrder === undefined && newOutside_1 === undefined && newOutside_2 === undefined && newOutside_3 === undefined && newSole_bottom === undefined && newSole_top === undefined && newInside === undefined && newLaces === undefined && newSize === undefined && newQuantity === undefined && newUserId === undefined) {
         response.status(400).json({
             status: "error",
-            message: "PUT message",
+            message: "PUT order",
             data: {
-                message: "No message or user given"
+                message: "No order or user given"
             }
         })
     }
@@ -80,7 +82,6 @@ const updateOne = async (request, response) => {
         // Een leeg update query object wordt aangemaakt
         const updateQuery = {};
         // Afhankelijk van wat er meegegeven is, wordt er in de updateQuery object nieuwe velden aangewezen.
-        newShoeId && (request.params.shoeId = newShoeId);
         newTitle && (request.body.title = newTitle);
         newPrice && (request.body.price = newPrice);
         newDeliveryStatus && (request.body.deliveryStatus = newDeliveryStatus);
@@ -96,27 +97,28 @@ const updateOne = async (request, response) => {
         newMaterial && (request.body.material = newMaterial);
         newColor && (request.body.color = newColor);
         newName && (request.body.name = newName);
+        newSize && (request.body.size = newSize);
         newQuantity && (request.body.quantity = newQuantity);
         newUserId && (request.params.userId = newUserId);
         /**
          * Het bericht word gevonden gebaseerd op de id en deze wordt dan aangepast.
          */
-        Message.findByIdAndUpdate(request.params.id, updateQuery, { new: true })
-            .then((message) => {
-                if (!message) {
+        Order.findByIdAndUpdate(request.params.id, updateQuery, { new: true })
+            .then((order) => {
+                if (!order) {
                     response.status(404).json({
                         status: "error",
-                        message: "PUT message",
+                        message: "PUT order",
                         data: {
-                            message: "Message not found"
+                            message: "Order not found"
                         }
                     })
                 } else {
                     response.json({
                         status: "success",
-                        message: "Message updated",
+                        message: "Order updated",
                         data: {
-                            message: message,
+                            message: order,
                         },
                     });
                 }

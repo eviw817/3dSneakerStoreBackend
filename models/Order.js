@@ -36,6 +36,7 @@ const Order = mongoose.model("Order", {
         }
     },
     name: { type: String }, 
+    size: { type: Number, required: true },
     quantity: { type: Number, required: true }, 
     userId: { type: String, required: true } 
 });
