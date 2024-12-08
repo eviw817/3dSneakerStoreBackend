@@ -54,15 +54,7 @@ const updateOne = async (request, response) => {
     const newDeliveryStatus = request.body.deliveryStatus;
     const newPaymentStatus = request.body.paymentStatus;
     const newTimeOfOrder = request.body.timeOfOrder;
-    const newOutside_1 = request.body.outside_1;
-    const newOutside_2 = request.body.outside_2;
-    const newOutside_3 = request.body.outside_3;
-    const newSole_bottom = request.body.sole_bottom;
-    const newSole_top = request.body.sole_top;
-    const newInside = request.body.inside;
-    const newLaces = request.body.laces;
-    const newMaterial = request.body.material;
-    const newColor = request.body.color;
+    const newParts = request.body.parts;
     const newName = request.body.name;
     const newSize = request.body.size;
     const newQuantity = request.body.quantity;
@@ -70,7 +62,7 @@ const updateOne = async (request, response) => {
     /**
      * Indien de body volledig leeg is, wordt de PUT niet geaccepteerd.
      */
-    if (newTitle === undefined && newPrice === undefined && newDeliveryStatus === undefined && newPaymentStatus === undefined && newTimeOfOrder === undefined && newOutside_1 === undefined && newOutside_2 === undefined && newOutside_3 === undefined && newSole_bottom === undefined && newSole_top === undefined && newInside === undefined && newLaces === undefined && newSize === undefined && newQuantity === undefined && newUserId === undefined) {
+    if (newTitle === undefined && newPrice === undefined && newDeliveryStatus === undefined && newPaymentStatus === undefined && newTimeOfOrder === undefined && newParts === undefined && newSize === undefined && newQuantity === undefined && newUserId === undefined) {
         response.status(400).json({
             status: "error",
             message: "PUT order",
@@ -82,25 +74,18 @@ const updateOne = async (request, response) => {
     else {
         // Een leeg update query object wordt aangemaakt
         const updateQuery = {};
+        console.log(newDeliveryStatus && "Delivery status changed");
         // Afhankelijk van wat er meegegeven is, wordt er in de updateQuery object nieuwe velden aangewezen.
-        newTitle && (request.body.title = newTitle);
-        newPrice && (request.body.price = newPrice);
-        newDeliveryStatus && (request.body.deliveryStatus = newDeliveryStatus);
-        newPaymentStatus && (request.body.paymentStatus = newPaymentStatus);
+        newTitle && (updateQuery.title = newTitle);
+        newPrice && (updateQuery.price = newPrice);
+        newDeliveryStatus && (updateQuery.deliveryStatus = newDeliveryStatus);
+        newPaymentStatus && (updateQuery.paymentStatus = newPaymentStatus);
         newTimeOfOrder && (request.body.timeOfOrder = newTimeOfOrder);
-        newOutside_1 && (request.body.outside_1 = newOutside_1);
-        newOutside_2 && (request.body.outside_2 = newOutside_2);
-        newOutside_3 && (request.body.outside_3 = newOutside_3);
-        newSole_bottom && (request.body.sole_bottom = newSole_bottom);
-        newSole_top && (request.body.sole_top = newSole_top);
-        newInside && (request.body.inside = newInside);
-        newLaces && (request.body.laces = newLaces);
-        newMaterial && (request.body.material = newMaterial);
-        newColor && (request.body.color = newColor);
+        newParts && (updateQuery.parts = newParts);
         newName && (request.body.name = newName);
-        newSize && (request.body.size = newSize);
-        newQuantity && (request.body.quantity = newQuantity);
-        newUserId && (request.params.userId = newUserId);
+        newSize && (updateQuery.size = newSize);
+        newQuantity && (updateQuery.quantity = newQuantity);
+        newUserId && (updateQuery.userId = newUserId);
         /**
          * Het bericht word gevonden gebaseerd op de id en deze wordt dan aangepast.
          */
@@ -131,8 +116,11 @@ const updateOne = async (request, response) => {
 // DELETE /api/v1/orders/:id
 const deleteOne = async (request, response) => {
     try {
-        await response.order.remove(); // Remove the order
-        response.json({ message: 'Order removed' }); // Send a message
+        const order = await Order.findByIdAndDelete(request.params.id);// Remove the order
+        if (order === null) {
+            return response.status(404).json({ message: 'Order not found' }); // Send a message if the order is not found
+        }
+        response.json({ message: 'Order deleted' }); // Send a message if the order
     } catch (error) {
         response.status(500).json({ message: error.message }); // Send an error if there is one
     }
