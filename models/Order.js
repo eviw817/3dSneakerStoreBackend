@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 const Order = mongoose.model("Order", { 
-    shoeId: { type: String, required: true }, 
-    name: { type: String, required: true }, 
+    title: { type: String, required: true },
     price: { type: Number, required: true }, 
     deliveryStatus: { type: String, required: true }, 
-    paymentStatus: { type: String, required: true }, 
+    paymentStatus: { type: Boolean, required: true }, 
     timeOfOrder: { type: String, required: true }, 
     parts: {
         outside_1: {
@@ -36,6 +35,7 @@ const Order = mongoose.model("Order", {
             material: String
         }
     },
+    name: { type: String }, 
     quantity: { type: Number, required: true }, 
     userId: { type: String, required: true } 
 });

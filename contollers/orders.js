@@ -18,7 +18,7 @@ const findOne = async (request, response) => {
 // POST /api/v1/orders
 const create = async (request, response) => {
     const order = new Order({
-        name: request.body.name,
+        title: request.body.title,
         price: request.body.price, 
         deliveryStatus: request.body.deliveryStatus, 
         paymentStatus: request.body.paymentStatus, 
@@ -32,6 +32,7 @@ const create = async (request, response) => {
         laces: request.body.laces,
         material: request.body.material, 
         color: request.body.color, 
+        name: request.body.name,
         quantity: request.body.quantity,
         userId: request.body.userId
     })
@@ -46,7 +47,7 @@ const create = async (request, response) => {
 // PUT /api/v1/orders/:id
 const updateOne = async (request, response) => {
     const newShoeId = request.params.shoeId;
-    const newName = request.body.name;
+    const newTitle = request.body.title;
     const newPrice = request.body.price;
     const newDeliveryStatus = request.body.deliveryStatus;
     const newPaymentStatus = request.body.paymentStatus;
@@ -60,12 +61,13 @@ const updateOne = async (request, response) => {
     const newLaces = request.body.laces;
     const newMaterial = request.body.material;
     const newColor = request.body.color;
+    const newName = request.body.name;
     const newQuantity = request.body.quantity;
     const newUserId = request.params.userId;
     /**
      * Indien de body volledig leeg is, wordt de PUT niet geaccepteerd.
      */
-    if (newShoeId === undefined && newName === undefined && newPrice === undefined && newDeliveryStatus === undefined && newPaymentStatus === undefined && newTimeOfOrder === undefined && newOutside_1 === undefined && newOutside_2 === undefined && newOutside_3 === undefined && newSole_bottom === undefined && newSole_top === undefined && newInside === undefined && newLaces === undefined && newQuantity === undefined && newUserId === undefined) {
+    if (newShoeId === undefined && newTitle === undefined && newPrice === undefined && newDeliveryStatus === undefined && newPaymentStatus === undefined && newTimeOfOrder === undefined && newOutside_1 === undefined && newOutside_2 === undefined && newOutside_3 === undefined && newSole_bottom === undefined && newSole_top === undefined && newInside === undefined && newLaces === undefined && newQuantity === undefined && newUserId === undefined) {
         response.status(400).json({
             status: "error",
             message: "PUT message",
@@ -79,7 +81,7 @@ const updateOne = async (request, response) => {
         const updateQuery = {};
         // Afhankelijk van wat er meegegeven is, wordt er in de updateQuery object nieuwe velden aangewezen.
         newShoeId && (request.params.shoeId = newShoeId);
-        newName && (request.body.name = newName);
+        newTitle && (request.body.title = newTitle);
         newPrice && (request.body.price = newPrice);
         newDeliveryStatus && (request.body.deliveryStatus = newDeliveryStatus);
         newPaymentStatus && (request.body.paymentStatus = newPaymentStatus);
@@ -93,6 +95,7 @@ const updateOne = async (request, response) => {
         newLaces && (request.body.laces = newLaces);
         newMaterial && (request.body.material = newMaterial);
         newColor && (request.body.color = newColor);
+        newName && (request.body.name = newName);
         newQuantity && (request.body.quantity = newQuantity);
         newUserId && (request.params.userId = newUserId);
         /**
