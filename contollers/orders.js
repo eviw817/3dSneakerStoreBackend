@@ -13,7 +13,16 @@ const index = async (request, response) => {
 
 // GET /api/v1/orders/:id
 const findOne = async (request, response) => {
-    response.json(response.order); // Send the order as JSON
+    try {
+        const order = await Order.findById(request.params.id); // Find the order by id
+        if (order === null) {
+            return response.status(404).json({ message: 'Order not found' }); // Send a message if the order is not found
+        }
+        response.json(order); // Send the order as JSON
+    }
+    catch (error) {
+        response.status(500).json({ message: error.message }); // Send an error if there is one
+    }
 }
 
 // POST /api/v1/orders
@@ -23,16 +32,8 @@ const create = async (request, response) => {
         price: request.body.price, 
         deliveryStatus: request.body.deliveryStatus, 
         paymentStatus: request.body.paymentStatus, 
-        timeOfOrder: request.body.timeOfOrder, 
-        outside_1: request.body.outside_1,
-        outside_2: request.body.outside_2,
-        outside_3: request.body.outside_3,
-        sole_bottom: request.body.sole_bottom,
-        sole_top: request.body.sole_top,
-        inside: request.body.inside,
-        laces: request.body.laces,
-        material: request.body.material, 
-        color: request.body.color, 
+        timeOfOrder: request.body.timeOfOrder,
+        parts: request.body.parts, 
         name: request.body.name,
         size: request.body.size,
         quantity: request.body.quantity,
