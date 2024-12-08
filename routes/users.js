@@ -13,6 +13,23 @@ router.get('/', async function(req, res, next) {
   }
 });
 
+router.put('/:id/password', async function(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+    console.log(id)
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    user.password = newPassword;
+    await user.save();
+    res.json({ message: 'Password updated successfully' });
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 
